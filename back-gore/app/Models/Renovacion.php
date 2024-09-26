@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Renovacion extends Model
+{
+    use HasFactory;
+
+    protected $with = ['entidad'];
+
+    protected $fillable = [
+        'anio',
+        'tipo',
+        'numero_llegada',
+        'fecha_incial',
+        'fecha_vencimiento',
+        'numero_carta',
+        'folios',
+        'oficio_notificado',
+        'tipo_proceso',
+        'oficio_efectivizacion',
+        'estado_carta',
+        'entidad_financiera_id',
+        'carta_fianza_id'
+        ];
+        
+    public function carta()
+    {
+        return $this->belongsTo(Carta::class);
+    }
+
+    public function entidad()
+    {
+        return $this->belongsTo(Entidad::class);
+    }
+}
