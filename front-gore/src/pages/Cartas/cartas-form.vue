@@ -16,7 +16,8 @@
       <q-form @submit.prevent="submit">
         <q-card-section class="q-pa-md">
           <SelectInput  dense outlined clearable  label="Seleccionar Meta" color="teal" v-model="form.meta_id" :options="MetaService" OptionValue="idmeta" OptionLabel="label" :requerido="true"></SelectInput>
-        <div class="row q-mt-md">
+          <div class="row q-mt-md">
+          <SelectInput  dense outlined class="col q-mr-md" clearable  label="Seleccionar Procedimiento" color="teal" v-model="form.procedimiento_id" :options="ProcedimientoService" OptionValue="idprocedim" OptionLabel="desprocedim" :requerido="true"></SelectInput>
           <q-input dense outlined class="col" v-model="form.monto" :loading="form.validating" label="Monto *" @change="form.validate('monto')" :error="form.invalid('monto')" :class="form.invalid('monto') ? 'q-mb-sm' : ''">
             <template v-slot:prepend><q-icon name="mdi-key" /></template>
             <template v-slot:error> <div> {{ form.errors.monto }} </div> </template>
@@ -57,7 +58,7 @@
   import { onMounted, computed, ref, watch } from "vue";
   import SelectInput from "src/components/SelectInput.vue";
   import MetaService from "src/services/MetaService";
-  import DniRucService from "src/services/DniRucService";
+  import ProcedimientoService from "src/services/ProcedimientoService";
   import { useQuasar } from "quasar";
   const $q = useQuasar();
   const emits = defineEmits(["save"]);
@@ -80,6 +81,7 @@
         contratista: "",
         denominacion: "",
         meta_id:"",
+        procedimiento_id:"",
     });
   } else {
       form = useForm("post", "api/cartas", {
@@ -89,7 +91,7 @@
         contratista: "",
         denominacion: "",
         meta_id:"",
-
+        procedimiento_id:"",
     });
   }
 

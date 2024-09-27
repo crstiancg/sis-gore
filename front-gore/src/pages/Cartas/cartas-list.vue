@@ -9,20 +9,20 @@
       ></CartasForm>
     </q-dialog>
     <q-dialog v-model="formPapeletas" persistent>
-      <PapeletasForm
+      <RenovacionForm
       :title="title"
       :edit="edit"
       :id="editId"
-      ref="papeletasformRef"
-      @savePapeleta="savePapeleta"
-      ></PapeletasForm>
+      ref="renovacionformRef"
+      @saveRenovacion="saveRenovacion"
+      ></RenovacionForm>
     </q-dialog>
     <q-page>
       <div class="q-pa-md q-gutter-sm">
         <q-breadcrumbs>
           <q-breadcrumbs-el icon="home" />
   
-          <q-breadcrumbs-el label="Personas / Papeletas" icon="mdi-key" />
+          <q-breadcrumbs-el label="Cartas Fianza" icon="mdi-key" />
         </q-breadcrumbs>
       </div>
       <q-separator />
@@ -36,19 +36,13 @@
         ref="tableRef" :rows="rows" :columns="columns"
         row-key="id" v-model:pagination="pagination" :loading="loading" :filter="filter" binary-state-sort @request="onRequest" >
         <template v-slot:top-right>
-          <q-input
-            active-class="text-white"
-            standout="bg-primary"
-            color="white"
-            dense
-            debounce="500"
-            v-model="filter"
-            placeholder="Buscar"
-          >
+          <SelectInput  dense outlined class="col q-mr-md" clearable  label="Filtrar Procedimiento" color="teal" :options="ProcedimientoService" OptionValue="idprocedim" OptionLabel="desprocedim"></SelectInput>
+          <q-input active-class="text-white" standout="bg-primary" color="white" dense debounce="500" v-model="filter" placeholder="Buscar" >
             <template v-slot:append>
               <q-icon name="search" />
             </template>
           </q-input>
+
         </template>
         <template v-slot:header="props">
           <q-tr :props="props">
@@ -65,10 +59,10 @@
               {{ col.value }}
             </q-td>
             <q-td auto-width>
-              <q-btn size="md" @click="editar(props.row.id)" icon="edit" class="q-mr-xs" />
-              <q-btn size="md" @click="upload_file(props.row.id)" icon="upload_file" class="q-mr-xs" />
-              <q-btn size="md" @click="show_papeleta(props.row.id)" icon="filter_list" class="q-mr-xs" />
-              <q-btn size="md" @click="eliminar(props.row.id)" icon="delete" />
+              <q-btn size="sm" color="primary" round @click="editar(props.row.id)" icon="edit" class="q-mr-xs" />
+              <q-btn size="sm" color="primary" round @click="renovacion(props.row.id)" icon="sync_problem" class="q-mr-xs" />
+              <q-btn size="sm" color="primary" round @click="show_renovacion(props.row.id)" icon="filter_list" class="q-mr-xs" />
+              <q-btn size="sm" color="primary" round @click="eliminar(props.row.id)" icon="delete" />
             </q-td>
           </q-tr>
         </template>
@@ -78,10 +72,13 @@
   
   <script setup>
   import { ref, onMounted } from "vue";
-  import PersonaService from "src/services/PersonaService";
+  import CartaService from "src/services/CartaService";
   import { useQuasar } from "quasar";
   import CartasForm from "src/pages/Cartas/cartas-form.vue";
-  import PapeletasForm from "src/pages/Cartas/papeletas-form.vue";
+  import RenovacionForm from "src/pages/Cartas/renovacion-form.vue";
+  import SelectInput from "src/components/SelectInput.vue";
+  import ProcedimientoService from "src/services/ProcedimientoService";
+
   import { useRouter, useRoute } from "vue-router";
   const router = useRouter();
   const $q = useQuasar();
@@ -94,31 +91,45 @@
       sortable: true,
     },
     {
-      name: "dni",
-      label: "DNI",
+      name: "monto",
+      label: "Monto Carta",
       aling: "center",
-      field: (row) => row.dni ? row.dni : "N/A",
+      field: (row) => row.monto,
       sortable: true,
     },
     {
-      name: "ruc",
-      label: "RUC",
+      name: "idprocedim",
+      label: "Procedimineto",
       aling: "center",
-      field: (row) => row.ruc ? row.ruc : "N/A",
+      field: (row) => row.procedimiento.desprocedim,
       sortable: true,
     },
     {
-      name: "nombre_completo",
-      label: "NOMBRE COMPLETO",
+      name: "idmeta",
+      label: "Meta",
       aling: "center",
-      field: (row) => row.nombre_completo ? row.nombre_completo : "N/A",
+      field: (row) => row.meta.codmeta,
       sortable: true,
     },
     {
-      name: "rsocial",
-      label: "RAZON SOCIAL",
+      name: "contratista",
+      label: "Contratista",
       aling: "center",
-      field: (row) => row.rsocial ? row.rsocial : "N/A", 
+      field: (row) => row.contratista,
+      sortable: true,
+    },
+    {
+      name: "dependencia",
+      label: "Dependencia",
+      aling: "center",
+      field: (row) => row.dependencia,
+      sortable: true,
+    },
+    {
+      name: "denominacion",
+      label: "Denominacion",
+      aling: "center",
+      field: (row) => row.denominacion,
       sortable: true,
     },
 
@@ -128,7 +139,7 @@
   const formPermisos = ref(false);
   const formPapeletas = ref(false);
   const personasformRef = ref();
-  const papeletasformRef = ref();
+  const renovacionformRef = ref();
   const title = ref("");
   const edit = ref(false);
   const editId = ref();
@@ -150,7 +161,7 @@
   
     const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
     const order_by = descending ? "-" + sortBy : sortBy;
-    const { data, total = 0 } = await PersonaService.getData({
+    const { data, total = 0 } = await CartaService.getData({
       params: { rowsPerPage: fetchCount, page, search: filter, order_by },
     });
     console.log(data);
@@ -184,31 +195,31 @@
     });
   };
   async function editar(id) {
-    title.value = "Editar personal ";
+    title.value = "Editar Carta Fianza ";
     formPermisos.value = true;
     edit.value = true;
     editId.value = id;
-    const row = await PersonaService.get(id);
+    const row = await CartaService.get(id);
     console.log(row);
   
     personasformRef.value.form.setData({...row});
-     if (row.tipo_documento === "DNI") {
-        personasformRef.value.form.num_documento = row.dni;  
-      } else if (row.tipo_documento === "RUC") {
-        personasformRef.value.form.num_documento = row.ruc; 
-      }
+    personasformRef.value.form.meta_id = row.meta.idmeta;  
+    personasformRef.value.form.procedimiento_id = row.procedimiento.idprocedim;  
   }
   
-    async function upload_file(id) {
-      title.value = "Registrar Papeleta";
+    async function renovacion(id) {
+      title.value = "Registrar Renovacion";
       formPapeletas.value = true;
       edit.value = true;
       editId.value = id;
       console.log(editId.value);
-
+      const row = await CartaService.get(id);
+      console.log(row);
+  
+      renovacionformRef.value.form.setData({...row});
     }
 
-  const savePapeleta = () => {
+  const saveRenovacion = () => {
     formPapeletas.value = false;
     tableRef.value.requestServerInteraction();
     $q.notify({
@@ -220,10 +231,10 @@
     });
   };
 
-  async function show_papeleta(id) {
+  async function show_renovacion(id) {
     console.log("show", id);
     router.push({
-      name: "Papeleta",
+      name: "Renovacion",
       params: { id: id },
   });
     
@@ -236,7 +247,7 @@
       cancel: true,
       persistent: true,
     }).onOk(async () => {
-      await PersonaService.delete(id);
+      await CartaService.delete(id);
       tableRef.value.requestServerInteraction();
       $q.notify({
         type: "positive",

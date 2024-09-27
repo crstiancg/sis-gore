@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             PermisoSeeder::class, 
             UbigeoSeeder::class,
             TipoSeeder::class,
+            EntidadSeeder::class,
         ]);
     }
 }

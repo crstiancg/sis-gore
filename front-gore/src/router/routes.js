@@ -59,9 +59,9 @@ const routes = [
         component: () => import("pages/Multas/multas-list.vue"),
       },
       {
-        path: "/papeleta/:id",
-        name: "Papeleta",
-        component: () => import("components/show-papeletas.vue"),
+        path: "/renovacion/:id",
+        name: "Renovacion",
+        component: () => import("src/components/show-renovacion.vue"),
       },
     ],
   },

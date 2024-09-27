@@ -11,19 +11,24 @@ class Carta extends Model
     use HasFactory;
 
     protected $table = 'cartas';
-    protected $with = ['meta','renovacions'];
+    protected $with = ['meta','renovacions','procedimiento'];
     protected $fillable = [
         'monto',
         'contratista',
         'dependencia',
         'denominacion',
         'meta_id',
-
+        'procedimiento_id',
     ];
-    // public function meta()
-    // {
-    //     return $this->belongsTo(Meta::class, 'meta_id');
-    // }
+    public function meta()
+    {
+        return $this->belongsTo(Meta::class, 'meta_id');
+    }
+
+    public function procedimiento()
+    {
+        return $this->belongsTo(Procedimiento::class, 'procedimiento_id');
+    }
 
     public function addBusinessDays($date, $days) {
         $carbonDate = Carbon::parse($date);

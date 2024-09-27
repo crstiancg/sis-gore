@@ -15,6 +15,7 @@
     "@quasar/extras": "^1.16.4",
     "axios": "^1.2.1",
     "date-fns": "^3.0.0",
+    "dayjs": "^1.11.13",
     "encrypt-storage": "^2.12.19",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",

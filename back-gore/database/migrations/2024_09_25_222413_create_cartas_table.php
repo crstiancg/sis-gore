@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('contratista', 500)->nullable();
             $table->string('dependencia', 500)->nullable();
             $table->char('meta_id', 4)->nullable();
+            $table->char('procedimiento_id', 2)->nullable();
             $table->string('denominacion', 400)->nullable();
             $table->timestamps();
         });

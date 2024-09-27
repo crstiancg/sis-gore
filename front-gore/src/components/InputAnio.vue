@@ -32,7 +32,7 @@ const emit = defineEmits(['update:modelValue']);
 const props = defineProps({
   modelValue: { default:null },
   RangoAnios: { default: [null, null] },
-  RangoFechas: { default: ['01/01/1901', convertDate(new Date(),'dd/MM/yyyy')] },
+  RangoFechas: { default: ['01/01/1995', convertDate(new Date(),'dd/MM/yyyy')] },
   requerido: { default: false },
   label: { default: 'Año' },
 });

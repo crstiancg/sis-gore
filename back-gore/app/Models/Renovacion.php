@@ -23,8 +23,8 @@ class Renovacion extends Model
         'tipo_proceso',
         'oficio_efectivizacion',
         'estado_carta',
-        'entidad_financiera_id',
-        'carta_fianza_id'
+        'entidad_id',
+        'carta_id'
         ];
         
     public function carta()

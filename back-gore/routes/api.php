@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermisoController;
 use App\Http\Controllers\PersonaController;
+use App\Http\Controllers\ProcedimientoController;
 use App\Http\Controllers\RenovacionController;
 use App\Http\Controllers\TipoController;
 use App\Http\Controllers\UbigeoController;
@@ -70,5 +71,6 @@ Route::apiResource('cartas', CartaController::class)->middleware([HandlePrecogni
 Route::get('/porvencer/{data}', [CartaController::class,'porvencer'])->name('porvencer')->middleware([HandlePrecognitiveRequests::class]);
 Route::get('/renovacion/{renovacion}', [RenovacionController::class,'showrenovacion'])->name('showrenovacion')->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('meta', MetaController::class)->middleware([HandlePrecognitiveRequests::class]);
-Route::apiResource('entidadfinanciera', EntidadController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('procedimientos', ProcedimientoController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('entidad', EntidadController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('renovacion', RenovacionController::class)->middleware([HandlePrecognitiveRequests::class]);

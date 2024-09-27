@@ -17,7 +17,7 @@
     </q-avatar>
 
     <q-menu transition-show="jump-down" transition-hide="jump-up" style="min-width: 250px;">
-      <q-img src="images/image4.jpg"  loading="lazy">
+      <q-img src="images/image6.jpg" loading="lazy">
         <div class="row items-center justify-center" style="width: 100%;">
           <q-avatar :color="$q.dark.isActive ? 'white' : 'white'" :text-color="$q.dark.isActive ? 'dark' : 'dark'">
             {{ initialsMayus }}
@@ -30,10 +30,10 @@
       <q-separator />
 
       <q-list dense style="min-width: 250px">
-        <q-item v-if="userStore.roles[0] === 'Administrador'" clickable v-close-popup @click="editar(userStore.getId)">
+        <!-- <q-item v-if="userStore.roles[0] === 'Administrador'" clickable v-close-popup @click="editar(userStore.getId)">
           <q-item-section class="text-blue text-weight-medium text-center">Editar</q-item-section>
         </q-item>
-        <q-separator />
+        <q-separator /> -->
         <q-item clickable v-close-popup @click="logout()">
           <q-item-section class="text-red text-weight-medium text-center">Cerrar Sesión</q-item-section>
         </q-item>
