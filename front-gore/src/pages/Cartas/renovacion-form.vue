@@ -15,6 +15,7 @@
             <template v-slot:prepend><q-icon name="mdi-key" /></template>
             <template v-slot:error> <div> {{ form.errors.numero_llegada }} </div> </template>
           </q-input>
+          <InputAnio class="col q-mr-md"  dense outlined v-model="form.anio" :loading="form.validating" label="Año *" @change="form.validate('anio')" :error="form.invalid('anio')" :class="form.invalid('anio') ? 'q-mb-sm' : ''"></InputAnio>
           <q-select class="col" clearable dense outlined v-model="form.tipo" :loading="form.validating" label="Tipo de Carta *" @change="form.validate('tipo')" :options="['FIEL CUMPLIMIENTO','ADELANTO DIRECTO','ADELANTO DE MATERIALES']" :error="form.invalid('tipo')" :class="form.invalid('tipo') ? 'q-mb-sm' : ''" >
             <template v-slot:prepend><q-icon name="mdi-key" /></template>
             <template v-slot:error> <div> {{ form.errors.tipo }} </div> </template>
@@ -41,6 +42,7 @@
             <template v-slot:prepend><q-icon name="mdi-key" /></template>
             <template v-slot:error> <div> {{ form.errors.oficio_notificado }} </div> </template>
           </q-input>
+          <SelectInput class="col" dense outlined v-model="form.entidad_id" :options="EntidadService" label="Seleccionar Entidad" clearable :requerido="true" OptionValue="id" OptionLabel="nombre"></SelectInput>
         </div>
         <div class="row q-mt-sm">
           <q-input class="col q-mr-md" dense outlined v-model="form.oficio_efectivizacion" :loading="form.validating" label="Oficio de Efectivacion *" @change="form.validate('oficio_efectivizacion')" :error="form.invalid('oficio_efectivizacion')" :class="form.invalid('oficio_efectivizacion') ? 'q-mb-sm' : ''" >
