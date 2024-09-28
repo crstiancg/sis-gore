@@ -18,7 +18,4 @@ class Area extends Model
         return $this->hasMany(User::class);
     }
 
-    public function solicituds(){
-        return $this->hasMany(Solicitud::class);
-    }
 }

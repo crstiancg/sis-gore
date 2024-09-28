@@ -1,4 +1,13 @@
 <template>
+    <q-dialog v-model="formPapeletas" persistent>
+      <RenovacionForm
+      :title="title"
+      :edit="edit"
+      :id="editId"
+      ref="renovacionformRef"
+       @saveRenovacion="saveRenovacion"
+      ></RenovacionForm>
+    </q-dialog>
  <div class="q-px-md q-py-md">
     <div class="row justify-between">
         <div>
@@ -60,13 +69,8 @@
                     </q-chip>
                   </td>
                   <td class="text-right">
-                    <q-btn size="sm" @click="editar(a.id)" round color="primary" icon="edit"></q-btn>
+                    <q-btn size="sm" @click="renovacion(a.id)" round color="primary" icon="edit"></q-btn>
                   </td>
-                  <!-- <td style="white-space: normal;" class="text-right"><a v-if="a.archivo" :href="a.archivo" target="_blank" style="text-decoration:none; "> 
-                      <q-chip clickable @click="onClick" color="primary" text-color="white" icon="picture_as_pdf"> {{ i + 1 }} Ver archivo</q-chip>
-                  </a>
-                    <span v-else>N/A</span>
-                  </td> -->
                 </tr>
               </tbody>
             </q-markup-table>
@@ -80,39 +84,93 @@
 import { ref, onMounted } from "vue";
 import CartaService from "src/services/CartaService";
 import { useQuasar } from "quasar";
+import RenovacionForm from "src/pages/Cartas/renovacion-form.vue";
+import RenovacionService from "src/services/RenovacionService";
 import { useRoute, useRouter } from "vue-router";
 import dayjs from 'dayjs';
 const route = useRoute();
+const $q = useQuasar();
 const stringid = ref();
 const daysRemaining = ref([]);
+const renovacionformRef = ref();
+const title = ref("");
+const edit = ref(false);
+const editId = ref();
+const formPapeletas = ref(false);
 const form = ref({
   meta:{},
   procedimiento:{},
   renovacions: [],
 });
 
-onMounted(async () =>{
-    console.log(route);
+async function OnloadData() {
+  try {
     const res = await CartaService.get(route.params.id);
-    console.log(res);
     form.value = res;
-
+    
     form.value.renovacions.forEach((a, index) => {
-    if (a.fecha_incial && a.fecha_vencimiento) {
-      const startDate = dayjs(a.fecha_incial);
-      const endDate = dayjs(a.fecha_vencimiento);
-      daysRemaining.value[index] = endDate.diff(startDate, 'day'); // Calcula los días restantes
-    } else {
-      daysRemaining.value[index] = null; // Si alguna de las fechas es inválida
-    }
-  });
-})
-
-
-async function editar(id) {
-
-  alert("Editar Renovación Pendiente...");
+      if (a.fecha_incial && a.fecha_vencimiento) {
+        const startDate = dayjs(a.fecha_incial);
+        const endDate = dayjs(a.fecha_vencimiento);
+        daysRemaining.value[index] = endDate.diff(startDate, 'day'); // Calcula los días restantes
+      } else {
+        daysRemaining.value[index] = null; // Si alguna de las fechas es inválida
+      }
+    });
+  } catch (error) {
+    console.error("Error al cargar datos:", error);
+  }
 }
+
+// onMounted(async () =>{
+//     console.log(route);
+//     const res = await CartaService.get(route.params.id);
+//     console.log(res);
+//     form.value = res;
+
+//     form.value.renovacions.forEach((a, index) => {
+//     if (a.fecha_incial && a.fecha_vencimiento) {
+//       const startDate = dayjs(a.fecha_incial);
+//       const endDate = dayjs(a.fecha_vencimiento);
+//       daysRemaining.value[index] = endDate.diff(startDate, 'day'); 
+//     } else {
+//       daysRemaining.value[index] = null; 
+//     }
+//   });
+// })
+
+onMounted(() => {
+  OnloadData();
+});
+
+
+async function renovacion(id) {
+      title.value = "Editar Renovacion";
+      formPapeletas.value = true;
+      edit.value = true;
+      editId.value = id;
+      console.log(editId.value);
+      const row2 = await CartaService.get(id);
+      const row = await RenovacionService.get(id);
+      console.log(row);
+  
+      renovacionformRef.value.form.setData({...row, ...row2});
+    }
+
+const saveRenovacion = () => {
+    formPapeletas.value = false;
+    // tableRef.value.requestServerInteraction();
+    $q.notify({
+      type: "positive",
+      message: "Guardado con Exito.",
+      position: "top-right",
+      progress: true,
+      timeout: 1000,
+    });
+
+     OnloadData();
+  };
+
 </script>
 
 <style scoped>

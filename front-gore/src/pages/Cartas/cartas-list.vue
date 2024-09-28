@@ -36,7 +36,7 @@
         ref="tableRef" :rows="rows" :columns="columns"
         row-key="id" v-model:pagination="pagination" :loading="loading" :filter="filter" binary-state-sort @request="onRequest" >
         <template v-slot:top-right>
-          <SelectInput  dense outlined class="col q-mr-md" clearable  label="Filtrar Procedimiento" color="teal" :options="ProcedimientoService" OptionValue="idprocedim" OptionLabel="desprocedim"></SelectInput>
+          <!-- <SelectInput  dense outlined class="col q-mr-md" clearable  label="Filtrar Procedimiento" color="teal" :options="ProcedimientoService" OptionValue="idprocedim" OptionLabel="desprocedim"></SelectInput> -->
           <q-input active-class="text-white" standout="bg-primary" color="white" dense debounce="500" v-model="filter" placeholder="Buscar" >
             <template v-slot:append>
               <q-icon name="search" />
@@ -210,7 +210,7 @@
     async function renovacion(id) {
       title.value = "Registrar Renovacion";
       formPapeletas.value = true;
-      edit.value = true;
+      edit.value = false;
       editId.value = id;
       console.log(editId.value);
       const row = await CartaService.get(id);

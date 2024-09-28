@@ -11,7 +11,7 @@ class RenovacionController extends Controller
     {
         return $this->generateViewSetList(
             $request,
-            Renovacion::query()->orderBy('created_at', 'desc'),
+            Renovacion::query()->with('carta'),
             [],
             [],
             [],

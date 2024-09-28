@@ -2,15 +2,11 @@
 use App\Http\Controllers\CartaController;
 use App\Http\Controllers\EntidadController;
 use App\Http\Controllers\MetaController;
-use App\Http\Controllers\OficioController;
-use App\Http\Controllers\PapeletaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermisoController;
-use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\ProcedimientoController;
 use App\Http\Controllers\RenovacionController;
-use App\Http\Controllers\TipoController;
 use App\Http\Controllers\UbigeoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -58,14 +54,6 @@ Route::get('distritos', [UbigeoController::class, 'getDistritos']);
 Route::apiResource('/usuarios', UserController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/roles', RoleController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/permisos', PermisoController::class)->middleware([HandlePrecognitiveRequests::class]);
-
-/** **************************************************************************** */
-Route::get('/personas/dni/{dni}', [PersonaController::class, 'getSolicitanteDni']);
-Route::get('/personas/ruc/{ruc}', [PersonaController::class, 'getEmpresaRuc']);
-Route::apiResource('/personas', PersonaController::class)->middleware([HandlePrecognitiveRequests::class]);
-Route::apiResource('/papeletas', PapeletaController::class)->middleware([HandlePrecognitiveRequests::class]);
-Route::apiResource('/tipos', TipoController::class)->middleware([HandlePrecognitiveRequests::class]);
-Route::apiResource('/oficios', OficioController::class)->middleware([HandlePrecognitiveRequests::class]);
 
 Route::apiResource('cartas', CartaController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::get('/porvencer/{data}', [CartaController::class,'porvencer'])->name('porvencer')->middleware([HandlePrecognitiveRequests::class]);

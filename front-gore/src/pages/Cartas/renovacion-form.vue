@@ -10,15 +10,11 @@
     </q-card-section>
     <q-form @submit.prevent="submit">
       <q-card-section class="q-pa-md">
-        <!-- <div class="row">
-          <SelectInput class="col q-ml-md" dense outlined v-model="form.oficio_id" :options="OficiosService" label="Seleccionar Oficio" clearable :requerido="true" OptionValue="id" OptionLabel="nombre"></SelectInput>
-        </div> -->
         <div class="row q-mt-md">
           <q-input class="col q-mr-md" dense outlined v-model="form.numero_llegada" :loading="form.validating" label="Número de Llegada *" @change="form.validate('numero_llegada')" :error="form.invalid('numero_llegada')" :class="form.invalid('numero_llegada') ? 'q-mb-sm' : ''" >
             <template v-slot:prepend><q-icon name="mdi-key" /></template>
             <template v-slot:error> <div> {{ form.errors.numero_llegada }} </div> </template>
           </q-input>
-          <InputAnio class="col q-mr-md"  dense outlined v-model="form.anio" :loading="form.validating" label="Año *" @change="form.validate('anio')" :error="form.invalid('anio')" :class="form.invalid('anio') ? 'q-mb-sm' : ''"></InputAnio>
           <q-select class="col" clearable dense outlined v-model="form.tipo" :loading="form.validating" label="Tipo de Carta *" @change="form.validate('tipo')" :options="['FIEL CUMPLIMIENTO','ADELANTO DIRECTO','ADELANTO DE MATERIALES']" :error="form.invalid('tipo')" :class="form.invalid('tipo') ? 'q-mb-sm' : ''" >
             <template v-slot:prepend><q-icon name="mdi-key" /></template>
             <template v-slot:error> <div> {{ form.errors.tipo }} </div> </template>
@@ -45,7 +41,6 @@
             <template v-slot:prepend><q-icon name="mdi-key" /></template>
             <template v-slot:error> <div> {{ form.errors.oficio_notificado }} </div> </template>
           </q-input>
-          <SelectInput class="col" dense outlined v-model="form.entidad_id" :options="EntidadService" label="Seleccionar Entidad" clearable :requerido="true" OptionValue="id" OptionLabel="nombre"></SelectInput>
         </div>
         <div class="row q-mt-sm">
           <q-input class="col q-mr-md" dense outlined v-model="form.oficio_efectivizacion" :loading="form.validating" label="Oficio de Efectivacion *" @change="form.validate('oficio_efectivizacion')" :error="form.invalid('oficio_efectivizacion')" :class="form.invalid('oficio_efectivizacion') ? 'q-mb-sm' : ''" >
@@ -84,8 +79,6 @@ import { onMounted, ref } from "vue";
 import SelectInput from "src/components/SelectInput.vue";
 import InputAnio from "src/components/InputAnio.vue";
 import EntidadService from "src/services/EntidadService"
-import OficiosService from "src/services/OficiosService"
-
 const fileUrl = ref(null);
 const emits = defineEmits(["saveRenovacion"]);
 const props = defineProps({
@@ -98,6 +91,24 @@ const props = defineProps({
 });
 
 let form;
+  if (props.edit) {
+      form = useForm("put", "api/renovacion/" + props.id, {
+        id: "",
+        carta_id: props.id,
+        anio: "",
+        tipo: "",
+        numero_llegada: "",
+        fecha_incial: "",
+        fecha_vencimiento: "",
+        numero_carta: "",
+        folios: "",
+        oficio_notificado: "",
+        tipo_proceso: "",
+        oficio_efectivizacion: "",
+        estado_carta: "",
+        entidad_id: "",
+    });
+  } else {
   form = useForm("post", "api/renovacion", {
     id: "",
     carta_id: props.id,
@@ -114,7 +125,7 @@ let form;
     estado_carta: "",
     entidad_id: "",
   });
-
+}
 const submit = () => {
   form
     .submit()

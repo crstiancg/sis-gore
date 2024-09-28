@@ -14,7 +14,7 @@ class ProcedimientoController extends Controller
             $request,
             Procedimiento::query(),
             [],
-            ['codmeta', 'desmeta'],
+            [],
             [],
         );
     }

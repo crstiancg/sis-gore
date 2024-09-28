@@ -4,9 +4,6 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\TipoContenedor;
-use App\Models\TipoDocumento;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -28,7 +25,6 @@ class DatabaseSeeder extends Seeder
             AreaSeeder::class, 
             PermisoSeeder::class, 
             UbigeoSeeder::class,
-            TipoSeeder::class,
             EntidadSeeder::class,
         ]);
     }

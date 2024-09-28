@@ -1,42 +1,18 @@
 <template>
-    <q-dialog v-model="formPermisos">
-      <OficiosForm
-        :title="title"
-        :edit="edit"
-        :id="editId"
-        ref="oficiosformRef"
-        @save="save"
-      ></OficiosForm>
-    </q-dialog>
     <q-page>
       <div class="q-pa-md q-gutter-sm">
         <q-breadcrumbs>
           <q-breadcrumbs-el icon="home" />
   
-          <q-breadcrumbs-el label="Sub Series" icon="mdi-key" />
+          <q-breadcrumbs-el label="Renovaciones de Cartas Por Center" icon="mdi-key" />
         </q-breadcrumbs>
       </div>
       <q-separator />
-      <div class="q-gutter-xs q-pa-sm">
-        <q-btn
-          color="primary"
-          :disable="loading"
-          :label="$q.screen.lt.sm ? '' : 'Agregar'"
-          icon-right="add"
-          @click="
-            {
-              formPermisos = true;
-              edit = false;
-              title = 'Añadir Oficio';
-            }
-          "
-        />
-      </div>
-  
+ 
       <q-table
         :rows-per-page-options="[7, 10, 15]"
         class="my-sticky-header-table htable q-ma-sm"
-        title="Oficios"
+        title="Lista de Renovaciones"
         ref="tableRef"
         :rows="rows"
         :columns="columns"
@@ -67,7 +43,7 @@
             <q-th v-for="col in props.cols" :key="col.name" :props="props">
               {{ col.label }}
             </q-th>
-            <q-th auto-width> Acciones </q-th>
+            <!-- <q-th auto-width> Acciones </q-th> -->
           </q-tr>
         </template>
   
@@ -76,10 +52,25 @@
             <q-td v-for="col in props.cols" :key="col.name" :props="props">
               {{ col.value }}
             </q-td>
-            <q-td auto-width>
-              <q-btn size="sm" @click="editar(props.row.id)" icon="edit" class="q-mr-xs"/>
-              <q-btn size="sm" @click="eliminar(props.row.id)" icon="delete" />
-            </q-td>
+            <!-- <q-td auto-width>
+              <q-btn
+                size="sm"
+                outline
+                color="green"
+                round
+                @click="editar(props.row.id)"
+                icon="edit"
+                class="q-mr-xs"
+              />
+              <q-btn
+                size="sm"
+                outline
+                color="red"
+                round
+                @click="eliminar(props.row.id)"
+                icon="delete"
+              />
+            </q-td> -->
           </q-tr>
         </template>
       </q-table>
@@ -88,9 +79,8 @@
   
   <script setup>
   import { ref, onMounted } from "vue";
-  import OficiosService from "src/services/OficiosService";
+  import RenovacionService from "src/services/RenovacionService";
   import { useQuasar } from "quasar";
-  import OficiosForm from "src/pages/Oficios/oficios-form.vue";
   const $q = useQuasar();
   const columns = [
     {
@@ -101,20 +91,15 @@
       sortable: true,
     },
     {
-      name: "nombre",
-      label: "Nombre",
+      name: "id",
+      label: "Id",
       aling: "center",
-      field: (row) => row.nombre,
+      field: (row) => row.carta.procedimiento.desprocedim,
       sortable: true,
     },
   ];
   
   const tableRef = ref();
-  const formPermisos = ref(false);
-  const oficiosformRef = ref();
-  const title = ref("");
-  const edit = ref(false);
-  const editId = ref();
   const rows = ref([]);
   const filter = ref("");
   const loading = ref(false);
@@ -133,13 +118,11 @@
   
     const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
     const order_by = descending ? "-" + sortBy : sortBy;
-    const { data, total = 0 } = await OficiosService.getData({
+    const { data, total = 0 } = await RenovacionService.getData({
       params: { rowsPerPage: fetchCount, page, search: filter, order_by },
     });
     console.log(data);
-    // clear out existing data and add new
     rows.value.splice(0, rows.value.length, ...data);
-    // don't forget to update local pagination object
     !total
       ? (pagination.value.rowsNumber = data.length)
       : (pagination.value.rowsNumber = total);
@@ -147,57 +130,14 @@
     pagination.value.rowsPerPage = rowsPerPage;
     pagination.value.sortBy = sortBy;
     pagination.value.descending = descending;
-    // ...and turn of loading indicator
     loading.value = false;
   }
   
   onMounted(() => {
     tableRef.value.requestServerInteraction();
   });
-  
-  const save = () => {
-    formPermisos.value = false;
-    tableRef.value.requestServerInteraction();
-    $q.notify({
-      type: "positive",
-      message: "Guardado con Exito.",
-      position: "top-right",
-      progress: true,
-      timeout: 1000,
-    });
-  };
-  async function editar(id) {
-    title.value = "Editar Oficio ";
-    formPermisos.value = true;
-    edit.value = true;
-    editId.value = id;
-    const row = await OficiosService.get(id);
-    console.log(row);
-  
-    oficiosformRef.value.form.setData({
-      id: row.id,
-      nombre: row.nombre,
-    });
-  }
-  
-  async function eliminar(id) {
-    $q.dialog({
-      title: "¿Estas seguro de eliminar este registro?",
-      message: "Este proceso es irreversible.",
-      cancel: true,
-      persistent: true,
-    }).onOk(async () => {
-      await OficiosService.delete(id);
-      tableRef.value.requestServerInteraction();
-      $q.notify({
-        type: "positive",
-        message: "Eliminado con Exito.",
-        position: "top-right",
-        progress: true,
-        timeout: 1000,
-      });
-    });
-  }
+
+
   </script>
   
   

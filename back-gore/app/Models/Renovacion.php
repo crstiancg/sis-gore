@@ -9,6 +9,9 @@ class Renovacion extends Model
 {
     use HasFactory;
 
+
+    protected $table = 'renovacions';
+
     protected $with = ['entidad'];
 
     protected $fillable = [
@@ -29,7 +32,7 @@ class Renovacion extends Model
         
     public function carta()
     {
-        return $this->belongsTo(Carta::class);
+        return $this->belongsTo(Carta::class,'carta_id');
     }
 
     public function entidad()

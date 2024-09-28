@@ -102,9 +102,9 @@
             <q-item-section> Carta Fianza </q-item-section>
           </q-item>
           <q-item
-            :to="{ name: 'Multas' }"
-            :active="link === 'Multas'"
-            @click="link = 'Multas'"
+            :to="{ name: 'Renovaciones' }"
+            :active="link === 'Renovaciones'"
+            @click="link = 'Renovaciones'"
             clickable
             v-ripple
             class="q-ma-xs rounded-borders"
@@ -114,24 +114,9 @@
               <q-icon name="list" />
             </q-item-section>
 
-            <q-item-section> Tributos / Multas </q-item-section>
+            <q-item-section> Renovaciones Vencidos </q-item-section>
           </q-item>
           
-          <q-item
-            :to="{ name: 'Oficios' }"
-            :active="link === 'Oficios'"
-            @click="link = 'Oficios'"
-            clickable
-            v-ripple
-            class="q-ma-xs rounded-borders"
-            active-class="my-menu-link"
-          >
-            <q-item-section avatar>
-              <q-icon name="list" />
-            </q-item-section>
-
-            <q-item-section> Oficios </q-item-section>
-          </q-item>
 
         </q-list>
       </q-scroll-area>

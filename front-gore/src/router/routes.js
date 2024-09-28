@@ -46,22 +46,17 @@ const routes = [
       {
         path: "cartas",
         name: "Cartas",
-        component: () => import("pages/Cartas/cartas-list.vue"),
-      },
-      {
-        path: "oficios",
-        name: "Oficios",
-        component: () => import("pages/Oficios/oficios-list.vue"),
-      },
-      {
-        path: "multas",
-        name: "Multas",
-        component: () => import("pages/Multas/multas-list.vue"),
+        component: () => import("src/pages/Cartas/cartas-list.vue"),
       },
       {
         path: "/renovacion/:id",
         name: "Renovacion",
         component: () => import("src/components/show-renovacion.vue"),
+      },
+      {
+        path: "renovaciones",
+        name: "Renovaciones",
+        component: () => import("pages/Renovaciones/renovacionesv-list.vue"),
       },
     ],
   },
