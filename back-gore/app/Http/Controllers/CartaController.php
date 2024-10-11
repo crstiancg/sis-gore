@@ -65,4 +65,20 @@ class CartaController extends Controller
     {
         return response($carta->delete());
     }
+
+    public function cartasv(Request $request)
+    {
+            $dias = $request->input('dias', 6); 
+
+            $cartasPorVencer = Carta::whereHas('renovacions', function ($query) use ($dias) {
+                $query->whereRaw('DATEDIFF(fecha_vencimiento, fecha_incial) <= ?', [$dias]);
+            })
+            ->with(['renovacions' => function ($query) use ($dias) {
+                $query->whereRaw('DATEDIFF(fecha_vencimiento, fecha_incial) <= ?', [$dias]);
+            }])->get();
+
+            return response()->json($cartasPorVencer);
+
+
+    }
 }

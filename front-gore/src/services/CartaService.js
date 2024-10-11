@@ -20,6 +20,12 @@ class CartaService {
             return (await api.put(`/api/cartas/${reg.id}`, reg)).data;
         }
     }
+
+    static async getDatac(params) {
+        return (await api.get('/api/cartasv',params)).data;
+    }
+
+
 }
 
 export default CartaService;
