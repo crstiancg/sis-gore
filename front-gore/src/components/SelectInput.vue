@@ -21,27 +21,6 @@
       <template v-if="active_before" v-slot:before >
         <slot name="before"></slot>
       </template>
-      <!-- <template v-slot:after >
-        <slot name="after"></slot>
-      </template>
-      <template v-slot:error >
-        <slot name="error"></slot>
-      </template>
-      <template v-slot:hint >
-        <slot name="hint"></slot>
-      </template> -->
-      <!-- <template v-slot:counter >
-        <slot name="counter"></slot>
-      </template>
-      <template v-slot:loading >
-        <slot name="loading"></slot>
-      </template>
-      <template v-slot:before-options >
-        <slot name="before-options"></slot>
-      </template>
-      <template v-slot:after-options >
-        <slot name="after-options"></slot>
-      </template> -->
       <template v-slot:no-option>
           <q-item>
               <q-item-section class="text-grey">
@@ -109,13 +88,19 @@ watch(()=>props.modelValue,(newVal,oldVal)=>{
 const filterOptions = ref(stringOptions);
 function filter(val, update) {
   update(() => {
-    if (val === '') filterOptions.value = stringOptions;
-    else {
+    if (!stringOptions || stringOptions.length === 0) {
+      filterOptions.value = [];
+      return;
+    }
+    if (val === '') {
+      filterOptions.value = stringOptions;
+    } else {
       filterOptions.value = stringOptions.filter(v => {
-        if(typeof v === 'object'){
-          return v[op_label.value].toString().toLowerCase().includes(val.toLowerCase());
-        }else
-          return v.toString().toLowerCase().includes(val.toLowerCase())
+        if (typeof v === 'object') {
+          return v[op_label.value]?.toString().toLowerCase().includes(val.toLowerCase());
+        } else {
+          return v.toString().toLowerCase().includes(val.toLowerCase());
+        }
       });
     }
   });
@@ -140,17 +125,4 @@ function CargarModel(_model) {
   }
 }
 
-// function limpiarEspaciosRepetidos(array,val) {
-//   // Limpiar espacios en cada notario
-//   array.forEach((item) => {
-//     item[val] = item[val].replace(/\s+/g, ' ').trim();
-//   });
-//   // Eliminar elementos duplicados
-//   const array_ = array.filter(
-//     (item, index, self) =>
-//       index ===
-//       self.findIndex((t) => t[val] === item[val])
-//   );
-//   return array_;
-// }
 </script>
