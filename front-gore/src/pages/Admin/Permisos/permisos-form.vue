@@ -87,13 +87,6 @@ if (props.edit) {
     description: "",
   });
 }
-// async function cargar() {
-//   const { data } = await RoleService.getData({
-//     params: { rowsPerPage: 0, order_by: "id" },
-//   });
-//   roles.value = data;
-//   console.log(roles.value);
-// }
 
 const submit = () => {
   form

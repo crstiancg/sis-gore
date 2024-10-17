@@ -210,16 +210,7 @@
             </template>
           </q-select>
         </div>
-        <!-- <q-file clearable dense outlined v-model="form.archivo" :loading="form.validating" label="archivo *"  @update:model-value="previewFile" @change="form.validate('archivo')" :error="form.invalid('archivo')" :class="form.invalid('archivo') ? 'q-mb-sm' : ''" >
-          <template v-slot:prepend><q-icon name="mdi-key" /></template>
-          <template v-slot:error> <div> {{ form.errors.archivo }} </div> </template>
-        </q-file> -->
 
-        <!-- <iframe v-if="fileUrl && form.archivo"
-            :src="fileUrl"
-            width="100%"
-            height="500px"
-          ></iframe> -->
       </q-card-section>
       <q-separator />
 

@@ -115,21 +115,18 @@
 import { useForm } from "laravel-precognition-vue";
 import { onMounted, ref } from "vue";
 import RoleService from "src/services/RoleService";
+<<<<<<< HEAD:front-gore/src/pages/Admin/Usuarios/usuarios-form.vue
 import SelectArea from "src/components/select-area.vue";
 // import AreaService from "src/services/AreaService";
+=======
+import SelectArea from "src/components/SelectArea.vue";
+>>>>>>> 4c8064fe850d07e5d61e0f25678b8e2731aa5d58:front-gore/src/pages/Admin/Usuarios/UsuariosForm.vue
 
 const isPwd = ref(true);
 const roles = ref([]);
 const emits = defineEmits(["save"]);
 
 const idSelectArea = ref(null);
-
-// async function data(){
-//   const data1 = await AreaService.getData()
-//   console.log(data1);
-// };
-
-// data();
 
 const props = defineProps({
   title: String,

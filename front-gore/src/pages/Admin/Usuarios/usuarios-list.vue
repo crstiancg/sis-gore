@@ -47,16 +47,7 @@
       binary-state-sort
       @request="onRequest"
     >
-      <!-- <template v-slot:top-left>
 
-        <q-btn
-          color="primary"
-          :disable="loading"
-          :label="$q.screen.lt.sm ? '' : 'Agregar'"
-          icon-right="add"
-          @click="usuariosformRef.show = true"
-        />
-      </template> -->
 
       <template v-slot:top-right>
         <q-input
@@ -226,8 +217,7 @@ async function editar(id) {
     rolesSelected: row.rolesSelected,
   });
 
-  // permisosformRef.value.setValue(row);
-  // usuariosformRef.value.setData(row);
+ 
 }
 
 async function eliminar(id) {
