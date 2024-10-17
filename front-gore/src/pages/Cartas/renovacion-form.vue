@@ -239,7 +239,7 @@
 <script setup>
 import { useForm } from "laravel-precognition-vue";
 import { onMounted, ref } from "vue";
-import SelectInput from "src/components/SelectInput.vue";
+import SelectInput from "src/components/select-input.vue";
 import InputAnio from "src/components/InputAnio.vue";
 import EntidadService from "src/services/EntidadService";
 const fileUrl = ref(null);

@@ -126,7 +126,7 @@
 <script setup>
 import { useForm } from "laravel-precognition-vue";
 import { onMounted, computed, ref, watch } from "vue";
-import SelectInput from "src/components/SelectInput.vue";
+import SelectInput from "src/components/select-input.vue";
 import MetaService from "src/services/MetaService";
 import ProcedimientoService from "src/services/ProcedimientoService";
 import { useQuasar } from "quasar";

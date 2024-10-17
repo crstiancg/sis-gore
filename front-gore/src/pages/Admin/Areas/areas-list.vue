@@ -105,7 +105,7 @@
   import { ref, onMounted } from "vue";
   import AreaService from "src/services/AreaService";
   import { useQuasar } from "quasar";
-  import AreasForm from "src/pages/Admin/Areas/AreasForm.vue";
+  import AreasForm from "src/pages/Admin/Areas/areas-form.vue";
   const $q = useQuasar();
   const columns = [
     {

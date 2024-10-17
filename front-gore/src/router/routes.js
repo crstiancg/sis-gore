@@ -7,7 +7,7 @@ const routes = [
       {
         path: "",
         name: "Login",
-        component: () => import("pages/Auth/LoginPage.vue"),
+        component: () => import("src/pages/Auth/login-page.vue"),
       },
     ],
   },
@@ -15,33 +15,33 @@ const routes = [
   {
     path: "/",
 
-    component: () => import("layouts/AdminLayout.vue"),
+    component: () => import("src/layouts/admin-layout.vue"),
     meta: { requiresAuth: true },
     children: [
       {
         path: "admin",
         name: "Dash",
-        component: () => import("pages/IndexPage.vue"),
+        component: () => import("src/pages/index-page.vue"),
       },
       {
         path: "permisos",
         name: "Permisos",
-        component: () => import("pages/Admin/Permisos/PermisosList.vue"),
+        component: () => import("src/pages/Admin/Permisos/permisos-list.vue"),
       },
       {
         path: "roles",
         name: "Roles",
-        component: () => import("pages/Admin/Roles/RolesList.vue"),
+        component: () => import("src/pages/Admin/Roles/roles-list.vue"),
       },
       {
         path: "usuarios",
         name: "Usuarios",
-        component: () => import("pages/Admin/Usuarios/UsuariosList.vue"),
+        component: () => import("src/pages/Admin/Usuarios/usuarios-list.vue"),
       },
       {
         path: "areas",
         name: "Areas",
-        component: () => import("pages/Admin/Areas/AreasList.vue"),
+        component: () => import("src/pages/Admin/Areas/areas-list.vue"),
       },
       {
         path: "cartas",
@@ -65,7 +65,7 @@ const routes = [
   // but you can also remove it
   {
     path: "/:catchAll(.*)*",
-    component: () => import("pages/ErrorNotFound.vue"),
+    component: () => import("src/pages/error-not-found.vue"),
   },
 ];
 

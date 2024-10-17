@@ -105,7 +105,7 @@
 import { ref, onMounted } from "vue";
 import PermisoService from "src/services/PermisoService";
 import { useQuasar } from "quasar";
-import PermisosForm from "src/pages/Admin/Permisos/PermisosForm.vue";
+import PermisosForm from "src/pages/Admin/Permisos/permisos-form.vue";
 const $q = useQuasar();
 const columns = [
   {

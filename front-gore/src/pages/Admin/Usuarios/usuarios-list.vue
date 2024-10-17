@@ -1,19 +1,19 @@
 <template>
-  <q-dialog v-model="formRole">
-    <RolesForm
+  <q-dialog v-model="formUser">
+    <UsuariosForm
       :title="title"
       :edit="edit"
       :id="editId"
-      ref="rolesformRef"
+      ref="usuariosformRef"
       @save="save"
-    ></RolesForm>
+    ></UsuariosForm>
   </q-dialog>
   <q-page>
     <div class="q-pa-md q-gutter-sm">
       <q-breadcrumbs>
         <q-breadcrumbs-el icon="home" />
 
-        <q-breadcrumbs-el label="Roles" icon="mdi-account-key" />
+        <q-breadcrumbs-el label="Usuarios" icon="mdi-account" />
       </q-breadcrumbs>
     </div>
     <q-separator />
@@ -25,9 +25,9 @@
         icon-right="add"
         @click="
           {
-            formRole = true;
+            formUser = true;
             edit = false;
-            title = 'Añadir Rol';
+            title = 'Añadir Usuario';
           }
         "
       />
@@ -36,7 +36,7 @@
     <q-table
       :rows-per-page-options="[7, 10, 15]"
       class="my-sticky-header-table htable q-ma-sm"
-      title="Roles"
+      title="Usuarios"
       ref="tableRef"
       :rows="rows"
       :columns="columns"
@@ -47,6 +47,17 @@
       binary-state-sort
       @request="onRequest"
     >
+      <!-- <template v-slot:top-left>
+
+        <q-btn
+          color="primary"
+          :disable="loading"
+          :label="$q.screen.lt.sm ? '' : 'Agregar'"
+          icon-right="add"
+          @click="usuariosformRef.show = true"
+        />
+      </template> -->
+
       <template v-slot:top-right>
         <q-input
           active-class="text-white"
@@ -64,7 +75,12 @@
       </template>
       <template v-slot:header="props">
         <q-tr :props="props">
-          <q-th v-for="col in props.cols" :key="col.name" :props="props">
+          <q-th
+  
+            v-for="col in props.cols"
+            :key="col.name"
+            :props="props"
+          >
             {{ col.label }}
           </q-th>
           <q-th auto-width> Acciones </q-th>
@@ -103,9 +119,9 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import RoleService from "src/services/RoleService";
+import UsuarioService from "src/services/UsuarioService";
 import { useQuasar } from "quasar";
-import RolesForm from "src/pages/Admin/Roles/RolesForm.vue";
+import UsuariosForm from "src/pages/Admin/Usuarios/usuarios-form.vue";
 const $q = useQuasar();
 const columns = [
   {
@@ -115,19 +131,32 @@ const columns = [
     field: (row) => row.id,
     sortable: true,
   },
-
   {
     name: "name",
-    label: "Nombre",
+    label: "Usuario",
     aling: "center",
     field: (row) => row.name,
+    sortable: true,
+  },
+  {
+    name: "email",
+    label: "Email",
+    aling: "center",
+    field: (row) => row.email,
+    sortable: true,
+  },
+  {
+    name: "area",
+    label: "Area",
+    aling: "center",
+    field: (row) => (row.area ? row.area.nombre : "N/A"),
     sortable: true,
   },
 ];
 
 const tableRef = ref();
-const formRole = ref(false);
-const rolesformRef = ref();
+const formUser = ref(false);
+const usuariosformRef = ref();
 const title = ref("");
 const edit = ref(false);
 const editId = ref();
@@ -149,7 +178,7 @@ async function onRequest(props) {
 
   const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
   const order_by = descending ? "-" + sortBy : sortBy;
-  const { data, total = 0 } = await RoleService.getData({
+  const { data, total = 0 } = await UsuarioService.getData({
     params: { rowsPerPage: fetchCount, page, search: filter, order_by },
   });
   console.log(data);
@@ -172,7 +201,7 @@ onMounted(() => {
 });
 
 const save = () => {
-  formRole.value = false;
+  formUser.value = false;
   tableRef.value.requestServerInteraction();
   $q.notify({
     type: "positive",
@@ -183,18 +212,22 @@ const save = () => {
   });
 };
 async function editar(id) {
-  title.value = "Editar Rol";
-  formRole.value = true;
+  title.value = "Editar Usuario";
+  formUser.value = true;
   edit.value = true;
   editId.value = id;
-  const row = await RoleService.get(id);
+  const row = await UsuarioService.get(id);
   console.log(row);
 
-  rolesformRef.value.form.setData({
-    id: row.rol.id,
-    name: row.rol.name,
-    permisosSelected: row.permisosSelected,
+  usuariosformRef.value.form.setData({
+    id: row.user.id,
+    name: row.user.name,
+    email: row.user.email,
+    rolesSelected: row.rolesSelected,
   });
+
+  // permisosformRef.value.setValue(row);
+  // usuariosformRef.value.setData(row);
 }
 
 async function eliminar(id) {
@@ -204,7 +237,7 @@ async function eliminar(id) {
     cancel: true,
     persistent: true,
   }).onOk(async () => {
-    await RoleService.delete(id);
+    await UsuarioService.delete(id);
     tableRef.value.requestServerInteraction();
     $q.notify({
       type: "positive",
