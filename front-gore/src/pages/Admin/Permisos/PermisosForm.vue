@@ -63,9 +63,6 @@
 <script setup>
 import { useForm } from "laravel-precognition-vue";
 import { onMounted, ref } from "vue";
-// import RoleService from "src/services/RoleService"
-// const isPwd = ref(true);
-// const roles = ref(false);
 const emits = defineEmits(["save"]);
 const props = defineProps({
   title: String,
@@ -90,13 +87,6 @@ if (props.edit) {
     description: "",
   });
 }
-// async function cargar() {
-//   const { data } = await RoleService.getData({
-//     params: { rowsPerPage: 0, order_by: "id" },
-//   });
-//   roles.value = data;
-//   console.log(roles.value);
-// }
 
 const submit = () => {
   form
