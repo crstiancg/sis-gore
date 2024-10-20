@@ -21,8 +21,8 @@ class CartaService {
         }
     }
 
-    static async getDatac(params) {
-        return (await api.get('/api/cartasv',params)).data;
+    static async getDatac(reg) {
+        return (await api.post('/api/cartasv',reg)).data;
     }
 
 

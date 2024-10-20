@@ -57,7 +57,7 @@ Route::apiResource('/permisos', PermisoController::class)->middleware([HandlePre
 
 Route::apiResource('cartas', CartaController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::get('/porvencer/{data}', [CartaController::class,'porvencer'])->name('porvencer')->middleware([HandlePrecognitiveRequests::class]);
-Route::get('/cartasv', [CartaController::class,'cartasv'])->name('cartasv')->middleware([HandlePrecognitiveRequests::class]);
+Route::post('/cartasv', [CartaController::class,'cartasv'])->name('cartasv')->middleware([HandlePrecognitiveRequests::class]);
 Route::get('/renovacion/{renovacion}', [RenovacionController::class,'showrenovacion'])->name('showrenovacion')->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('meta', MetaController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('procedimientos', ProcedimientoController::class)->middleware([HandlePrecognitiveRequests::class]);

@@ -10,8 +10,12 @@
     </q-breadcrumbs>
   </div>
   <q-separator />
-
   <div class="q-pa-sm col-12">
+  <div class="q-pb-md" style="max-width:280px">
+    <div class="q-gutter-md">
+      <q-select color="teal" stack-label options-selected-class="text-deep-orange" use-chips filled dense v-model="rform.fecha"  @update:model-value="onRequestc" :options="[{ label: 'A UN DIA DE VENCER', value: 1 }, { label: 'A DOS DIAS DE VENCER', value: 2 }, { label: 'A TRES DIAS DE VENCER', value: 3 }, { label: 'A UNA SEMANA DE VENCER', value: 6 }]" emit-value map-options label="Seleccione dia de vencimiento"></q-select>
+    </div>
+  </div>
     <q-card bordered v-for="form in form" :key="form.id" class="q-mb-md">
       <q-card-section>
         <q-chip size="16px" icon="bookmark">Monto: S/. {{ form.monto }}</q-chip>
@@ -22,10 +26,10 @@
           Denominacion: {{ form.denominacion }}
         </div>
         <div class="q-ml-md text-subtitle2">
-          Meta: [ {{ form.meta.codmeta }} ] {{ form.meta.desmeta }}
+          Meta: [ {{ form.meta?.codmeta }} ] {{ form.meta?.desmeta }}
         </div>
         <div class="q-ml-md text-subtitle2">
-          Procedimiento: {{ form.procedimiento.desprocedim }}
+          Procedimiento: {{ form.procedimiento?.desprocedim }}
         </div>
         <q-markup-table class="q-pa-md" flat dense>
           <thead>
@@ -40,8 +44,8 @@
               <th class="text-left">Fecha Emisión</th>
               <th class="text-left">Fecha Vencimiento</th>
               <th class="text-left">E. Financiera</th>
-              <!-- <th class="text-left">Dias por Vencer</th>
-                  <th class="text-right">Acciones</th> -->
+              <th class="text-left">Dias por Vencer</th>
+              <!-- <th class="text-right">Acciones</th> -->
             </tr>
           </thead>
           <!-- {{ form.renovacions }} -->
@@ -71,12 +75,12 @@
                 }}</q-chip>
               </td>
               <td>{{ a.entidad.nombre ? a.entidad.nombre : "N/A" }}</td>
-              <!-- <td>
-                    <q-chip :color="daysRemaining[i] <= 6 ? 'red' : 'primary'" text-color="white">
-                      {{ daysRemaining[i] !== null ? daysRemaining[i] + ' días restantes' : 'Fecha inválida' }}
-                    </q-chip>
-                  </td>
-                  <td class="text-right">
+              <td>
+                <q-chip :color="daysRemaining[i] <= 6 ? 'red' : 'primary'" text-color="white">
+                  {{ daysRemaining[i] !== null ? daysRemaining[i] + ' días restantes' : 'Fecha inválida' }}
+                </q-chip>
+              </td>
+                  <!-- <td class="text-right">
                     <q-btn size="sm" @click="renovacion(a.id)" round color="primary" icon="edit"></q-btn>
                   </td> -->
             </tr>
@@ -85,10 +89,10 @@
       </q-card-section>
     </q-card>
   </div>
-  <pre>
-        {{ form }}
+  <!-- <pre>
+        {{ form.renovacions }}
       </pre
-  >
+  > -->
 </template>
 
 <script setup>
@@ -96,13 +100,15 @@ import { ref, onMounted } from "vue";
 import RenovacionService from "src/services/RenovacionService";
 import CartaService from "src/services/CartaService";
 import { useQuasar } from "quasar";
+import dayjs from 'dayjs';
 const $q = useQuasar();
 
 const tableRef = ref();
 const rows = ref([]);
 const filter = ref("");
 const loading = ref(false);
-const form = ref([]);
+const form = ref({});
+const daysRemaining = ref([]);
 const pagination = ref({
   sortBy: "id",
   descending: false,
@@ -133,14 +139,32 @@ async function onRequest(props) {
   loading.value = false;
 }
 
+const rform = ref({
+  fecha: "",
+});
+
 onMounted(() => {
   onRequestc();
 });
 
 async function onRequestc(params) {
-  const row = await CartaService.getDatac();
-  form.value = row;
-  console.log(row);
+    try {
+    const row = await CartaService.getDatac(rform.value);
+    form.value = row;
+    console.log(row);
+    
+    form.value.renovacions.forEach((a, index) => {
+      if (a.fecha_incial && a.fecha_vencimiento) {
+        const startDate = dayjs(a.fecha_incial);
+        const endDate = dayjs(a.fecha_vencimiento);
+        daysRemaining.value[index] = endDate.diff(startDate, 'day'); 
+      } else {
+        daysRemaining.value[index] = null; 
+      }
+    });
+  } catch (error) {
+    console.error("Error al cargar datos:", error);
+  }
 }
 </script>
 

@@ -68,7 +68,7 @@ class CartaController extends Controller
 
     public function cartasv(Request $request)
     {
-            $dias = $request->input('dias', 6); 
+            $dias = $request->input('fecha') ? $request->input('fecha') :10; 
 
             $cartasPorVencer = Carta::whereHas('renovacions', function ($query) use ($dias) {
                 $query->whereRaw('DATEDIFF(fecha_vencimiento, fecha_incial) <= ?', [$dias]);

@@ -152,14 +152,14 @@ const columns = [
     name: "idprocedim",
     label: "Procedimineto",
     aling: "center",
-    field: (row) => row.procedimiento.desprocedim,
+    field: (row) => row.procedimiento?.desprocedim,
     sortable: true,
   },
   {
     name: "idmeta",
     label: "Meta",
     aling: "center",
-    field: (row) => row.meta.codmeta,
+    field: (row) => row.meta?.codmeta,
     sortable: true,
   },
   {

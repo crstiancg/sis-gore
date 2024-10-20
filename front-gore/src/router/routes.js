@@ -21,7 +21,8 @@ const routes = [
       {
         path: "admin",
         name: "Dash",
-        component: () => import("pages/IndexPage.vue"),
+        // component: () => import("pages/IndexPage.vue"),
+        component: () => import("pages/Renovaciones/renovacionesv-list.vue"),
       },
       {
         path: "permisos",

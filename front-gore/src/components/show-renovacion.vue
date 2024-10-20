@@ -32,8 +32,8 @@
             <q-chip size="16px" icon="bookmark">Monto: S/. {{form.monto}}</q-chip>  
             <div class="q-ml-md text-subtitle2">Contratista: {{ form.contratista }}  </div>
             <div class="q-ml-md text-body2 text-weight-bold">Denominacion: {{ form.denominacion }}  </div>
-            <div class="q-ml-md text-subtitle2">Meta: [ {{ form.meta.codmeta }} ] {{ form.meta.desmeta }}  </div>
-            <div class="q-ml-md text-subtitle2">Procedimiento:  {{ form.procedimiento.desprocedim }}  </div>
+            <div class="q-ml-md text-subtitle2">Meta: [ {{ form.meta?.codmeta }} ] {{ form.meta?.desmeta }}  </div>
+            <div class="q-ml-md text-subtitle2">Procedimiento:  {{ form.procedimiento?.desprocedim }}  </div>
             <q-markup-table  class="q-pa-md" flat dense>
               <thead>
                 <tr>
