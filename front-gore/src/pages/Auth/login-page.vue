@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import LoginForm from "pages/Auth/LoginForm.vue";
+import LoginForm from "src/pages/Auth/login-form.vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();

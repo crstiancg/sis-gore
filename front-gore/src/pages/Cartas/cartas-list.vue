@@ -129,7 +129,6 @@ import CartaService from "src/services/CartaService";
 import { useQuasar } from "quasar";
 import CartasForm from "src/pages/Cartas/cartas-form.vue";
 import RenovacionForm from "src/pages/Cartas/renovacion-form.vue";
-
 import { useRouter, useRoute } from "vue-router";
 const router = useRouter();
 const $q = useQuasar();

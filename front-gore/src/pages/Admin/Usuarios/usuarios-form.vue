@@ -115,7 +115,7 @@
 import { useForm } from "laravel-precognition-vue";
 import { onMounted, ref } from "vue";
 import RoleService from "src/services/RoleService";
-import SelectArea from "src/components/SelectArea.vue";
+import SelectArea from "src/components/select-area.vue";
 
 const isPwd = ref(true);
 const roles = ref([]);

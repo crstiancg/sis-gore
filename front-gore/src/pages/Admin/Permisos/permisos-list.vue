@@ -1,19 +1,19 @@
 <template>
-  <q-dialog v-model="formUser">
-    <UsuariosForm
+  <q-dialog v-model="formPermisos">
+    <PermisosForm
       :title="title"
       :edit="edit"
       :id="editId"
-      ref="usuariosformRef"
+      ref="permisosformRef"
       @save="save"
-    ></UsuariosForm>
+    ></PermisosForm>
   </q-dialog>
   <q-page>
     <div class="q-pa-md q-gutter-sm">
       <q-breadcrumbs>
         <q-breadcrumbs-el icon="home" />
 
-        <q-breadcrumbs-el label="Usuarios" icon="mdi-account" />
+        <q-breadcrumbs-el label="Permisos" icon="mdi-key" />
       </q-breadcrumbs>
     </div>
     <q-separator />
@@ -25,9 +25,9 @@
         icon-right="add"
         @click="
           {
-            formUser = true;
+            formPermisos = true;
             edit = false;
-            title = 'Añadir Usuario';
+            title = 'Añadir Permiso';
           }
         "
       />
@@ -36,7 +36,7 @@
     <q-table
       :rows-per-page-options="[7, 10, 15]"
       class="my-sticky-header-table htable q-ma-sm"
-      title="Usuarios"
+      title="Permisos"
       ref="tableRef"
       :rows="rows"
       :columns="columns"
@@ -47,8 +47,6 @@
       binary-state-sort
       @request="onRequest"
     >
-
-
       <template v-slot:top-right>
         <q-input
           active-class="text-white"
@@ -66,12 +64,7 @@
       </template>
       <template v-slot:header="props">
         <q-tr :props="props">
-          <q-th
-  
-            v-for="col in props.cols"
-            :key="col.name"
-            :props="props"
-          >
+          <q-th v-for="col in props.cols" :key="col.name" :props="props">
             {{ col.label }}
           </q-th>
           <q-th auto-width> Acciones </q-th>
@@ -110,9 +103,9 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import UsuarioService from "src/services/UsuarioService";
+import PermisoService from "src/services/PermisoService";
 import { useQuasar } from "quasar";
-import UsuariosForm from "src/pages/Admin/Usuarios/UsuariosForm.vue";
+import PermisosForm from "src/pages/Admin/Permisos/permisos-form.vue";
 const $q = useQuasar();
 const columns = [
   {
@@ -124,30 +117,23 @@ const columns = [
   },
   {
     name: "name",
-    label: "Usuario",
+    label: "Nombre",
     aling: "center",
     field: (row) => row.name,
     sortable: true,
   },
   {
-    name: "email",
-    label: "Email",
+    name: "description",
+    label: "Descripcion",
     aling: "center",
-    field: (row) => row.email,
-    sortable: true,
-  },
-  {
-    name: "area",
-    label: "Area",
-    aling: "center",
-    field: (row) => (row.area ? row.area.nombre : "N/A"),
+    field: (row) => row.description,
     sortable: true,
   },
 ];
 
 const tableRef = ref();
-const formUser = ref(false);
-const usuariosformRef = ref();
+const formPermisos = ref(false);
+const permisosformRef = ref();
 const title = ref("");
 const edit = ref(false);
 const editId = ref();
@@ -158,7 +144,7 @@ const pagination = ref({
   sortBy: "id",
   descending: false,
   page: 1,
-  rowsPerPage: 7,
+  rowsPerPage: 9,
   rowsNumber: 10,
 });
 
@@ -169,7 +155,7 @@ async function onRequest(props) {
 
   const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
   const order_by = descending ? "-" + sortBy : sortBy;
-  const { data, total = 0 } = await UsuarioService.getData({
+  const { data, total = 0 } = await PermisoService.getData({
     params: { rowsPerPage: fetchCount, page, search: filter, order_by },
   });
   console.log(data);
@@ -192,7 +178,7 @@ onMounted(() => {
 });
 
 const save = () => {
-  formUser.value = false;
+  formPermisos.value = false;
   tableRef.value.requestServerInteraction();
   $q.notify({
     type: "positive",
@@ -203,21 +189,18 @@ const save = () => {
   });
 };
 async function editar(id) {
-  title.value = "Editar Usuario";
-  formUser.value = true;
+  title.value = "Editar Permiso";
+  formPermisos.value = true;
   edit.value = true;
   editId.value = id;
-  const row = await UsuarioService.get(id);
+  const row = await PermisoService.get(id);
   console.log(row);
 
-  usuariosformRef.value.form.setData({
-    id: row.user.id,
-    name: row.user.name,
-    email: row.user.email,
-    rolesSelected: row.rolesSelected,
+  permisosformRef.value.form.setData({
+    id: row.id,
+    name: row.name,
+    description: row.description,
   });
-
- 
 }
 
 async function eliminar(id) {
@@ -227,7 +210,7 @@ async function eliminar(id) {
     cancel: true,
     persistent: true,
   }).onOk(async () => {
-    await UsuarioService.delete(id);
+    await PermisoService.delete(id);
     tableRef.value.requestServerInteraction();
     $q.notify({
       type: "positive",

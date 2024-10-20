@@ -132,7 +132,7 @@
 import { onMounted, ref } from "vue";
 import SwitchDarkMode from "components/SwitchDarkMode.vue";
 import { useUserStore } from "src/stores/user-store";
-import NabvarUser from "components/NabvarUser.vue";
+import NabvarUser from "src/components/nabvar-user.vue";
 import { useRoute } from "vue-router";
 import { format } from "quasar";
 const userStore = useUserStore();
