@@ -63,9 +63,9 @@
                   <td><q-chip color="positive" text-color="white">{{ a.fecha_incial ? a.fecha_incial  : 'N/A' }}</q-chip></td>
                   <td><q-chip color="red" text-color="white">{{ a.fecha_vencimiento ? a.fecha_vencimiento  : 'N/A' }}</q-chip></td>
                   <td>{{ a.entidad.nombre ? a.entidad.nombre  : 'N/A' }}</td>
-                  <td>
+                 <td>
                     <q-chip :color="daysRemaining[i] <= 6 ? 'red' : 'primary'" text-color="white">
-                      {{ daysRemaining[i] !== null ? daysRemaining[i] + ' días restantes' : 'Fecha inválida' }}
+                      {{ daysRemaining[i] !== 'Fecha inválida' ? daysRemaining[i] : 'Fecha inválida' }}
                     </q-chip>
                   </td>
                   <td class="text-right">
@@ -107,21 +107,37 @@ async function OnloadData() {
   try {
     const res = await CartaService.get(route.params.id);
     form.value = res;
-    
+
+    daysRemaining.value = []; // Asegúrate de reiniciar el array antes de llenarlo
+
     form.value.renovacions.forEach((a, index) => {
-      if (a.fecha_incial && a.fecha_vencimiento) {
-        const startDate = dayjs(a.fecha_incial);
-        const endDate = dayjs(a.fecha_vencimiento);
-        daysRemaining.value[index] = endDate.diff(startDate, 'day'); // Calcula los días restantes
+      if (a.fecha_vencimiento) {
+        const today = dayjs(); // Obtén la fecha actual
+        const endDate = dayjs(a.fecha_vencimiento); // Fecha de vencimiento
+
+        // Calcular días restantes o días pasados
+        const remainingDays = endDate.diff(today, 'day'); 
+
+        // Si los días restantes son negativos, eso significa que ya venció, así que mostramos los días pasados
+        if (remainingDays >= 0) {
+          daysRemaining.value[index] = `${Math.abs(remainingDays)} días por vencer`;; // Días restantes
+        } else {
+          daysRemaining.value[index] = `${Math.abs(remainingDays)} días pasados`; // Mostrar días pasados
+        }
+
+        // Si la fecha ya pasó, también calculamos los días desde que venció
+        a.daysPassedSinceExpiration = remainingDays < 0 ? Math.abs(remainingDays) : null;
       } else {
-        daysRemaining.value[index] = null; // Si alguna de las fechas es inválida
+        daysRemaining.value[index] = 'Fecha inválida'; // Si falta la fecha
+        a.daysPassedSinceExpiration = null;
       }
+
+      console.log(a.fecha_incial, a.fecha_vencimiento);
     });
   } catch (error) {
     console.error("Error al cargar datos:", error);
   }
 }
-
 // onMounted(async () =>{
 //     console.log(route);
 //     const res = await CartaService.get(route.params.id);

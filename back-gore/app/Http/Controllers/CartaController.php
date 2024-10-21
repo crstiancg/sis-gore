@@ -68,17 +68,20 @@ class CartaController extends Controller
 
     public function cartasv(Request $request)
     {
-            $dias = $request->input('fecha') ? $request->input('fecha') :10; 
+        $dias = $request->input('fecha') ? $request->input('fecha') : 10;
 
-            $cartasPorVencer = Carta::whereHas('renovacions', function ($query) use ($dias) {
-                $query->whereRaw('DATEDIFF(fecha_vencimiento, fecha_incial) <= ?', [$dias]);
-            })
-            ->with(['renovacions' => function ($query) use ($dias) {
-                $query->whereRaw('DATEDIFF(fecha_vencimiento, fecha_incial) <= ?', [$dias]);
-            }])->get();
-
-            return response()->json($cartasPorVencer);
-
-
+        // Obtiene cartas cuyas renovaciones vencen en los próximos "n" días, vencen hoy o ya vencieron
+        $cartasPorVencer = Carta::whereHas('renovacions', function ($query) use ($dias) {
+            $query->whereRaw('DATEDIFF(fecha_vencimiento, CURDATE()) <= ?', [$dias]) // Cartas que vencen en los próximos días
+                  ->orWhereRaw('DATEDIFF(fecha_vencimiento, CURDATE()) = 0')          // Cartas que vencen hoy
+                  ->orWhereRaw('DATEDIFF(fecha_vencimiento, CURDATE()) < 0');         // Cartas que ya vencieron
+        })
+        ->with(['renovacions' => function ($query) use ($dias) {
+            $query->whereRaw('DATEDIFF(fecha_vencimiento, CURDATE()) <= ?', [$dias]) // Cartas que vencen en los próximos días
+                  ->orWhereRaw('DATEDIFF(fecha_vencimiento, CURDATE()) = 0')          // Cartas que vencen hoy
+                  ->orWhereRaw('DATEDIFF(fecha_vencimiento, CURDATE()) < 0');         // Cartas que ya vencieron
+        }])->get();
+    
+        return response()->json($cartasPorVencer);
     }
 }

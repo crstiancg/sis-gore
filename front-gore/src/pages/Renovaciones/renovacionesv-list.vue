@@ -13,7 +13,7 @@
   <div class="q-pa-sm col-12">
   <div class="q-pb-md" style="max-width:280px">
     <div class="q-gutter-md">
-      <q-select color="teal" stack-label options-selected-class="text-deep-orange" use-chips filled dense v-model="rform.fecha"  @update:model-value="onRequestc" :options="[{ label: 'A UN DIA DE VENCER', value: 1 }, { label: 'A DOS DIAS DE VENCER', value: 2 }, { label: 'A TRES DIAS DE VENCER', value: 3 }, { label: 'A UNA SEMANA DE VENCER', value: 6 }]" emit-value map-options label="Seleccione dia de vencimiento"></q-select>
+      <q-select color="teal" stack-label options-selected-class="text-deep-orange" use-chips filled dense v-model="rform.fecha"  @update:model-value="onRequestc" :options="options" emit-value map-options label="Seleccione dia de vencimiento"></q-select>
     </div>
   </div>
     <q-card bordered v-for="form in form" :key="form.id" class="q-mb-md">
@@ -34,33 +34,29 @@
         <q-markup-table class="q-pa-md" flat dense>
           <thead>
             <tr>
-              <th class="text-left">N°</th>
+              <!-- <th class="text-left">N°</th> -->
               <th class="text-left">Año</th>
               <th class="text-left">Tipo</th>
-              <th class="text-center">N° llegada</th>
+              <!-- <th class="text-center">N° llegada</th> -->
               <th class="text-left">Oficio Notificado</th>
-              <th class="text-left">Oficio Efectivacion</th>
               <th class="text-left">Estado</th>
               <th class="text-left">Fecha Emisión</th>
               <th class="text-left">Fecha Vencimiento</th>
               <th class="text-left">E. Financiera</th>
               <th class="text-left">Dias por Vencer</th>
-              <!-- <th class="text-right">Acciones</th> -->
+              <th class="text-left">Dias Pasando</th>
             </tr>
           </thead>
           <!-- {{ form.renovacions }} -->
           <tbody>
             <tr v-for="(a, i) in form.renovacions" :key="i">
-              <td>{{ i + 1 }}</td>
+              <!-- <td>{{ i + 1 }}</td> -->
               <td>{{ a.anio ? a.anio : "N/A" }}</td>
               <td>{{ a.tipo ? a.tipo : "N/A" }}</td>
-              <td class="text-center">
+              <!-- <td class="text-center">
                 {{ a.numero_llegada ? a.numero_llegada : "N/A" }}
-              </td>
+              </td> -->
               <td>{{ a.oficio_notificado ? a.oficio_notificado : "N/A" }}</td>
-              <td>
-                {{ a.oficio_efectivacion ? a.oficio_efectivacion : "N/A" }}
-              </td>
               <td>
                 <q-chip>{{ a.estado_carta ? a.estado_carta : "N/A" }}</q-chip>
               </td>
@@ -76,23 +72,22 @@
               </td>
               <td>{{ a.entidad.nombre ? a.entidad.nombre : "N/A" }}</td>
               <td>
-                <q-chip :color="daysRemaining[i] <= 6 ? 'red' : 'primary'" text-color="white">
-                  {{ daysRemaining[i] !== null ? daysRemaining[i] + ' días restantes' : 'Fecha inválida' }}
+                <q-chip :color="a.daysRemaining !== null && a.daysRemaining <= 6 ? 'red' : 'teal'" text-color="white">
+                  {{ a.daysRemaining !== null ? a.daysRemaining + ' días restantes' : 'Vencido' }}
                 </q-chip>
               </td>
-                  <!-- <td class="text-right">
-                    <q-btn size="sm" @click="renovacion(a.id)" round color="primary" icon="edit"></q-btn>
-                  </td> -->
+             <td>
+              <q-chip color="orange" text-color="white">
+                {{ a.daysPassedSinceExpiration !== null ? a.daysPassedSinceExpiration + ' días pasados' : 'N/A' }}
+              </q-chip>
+            </td>
             </tr>
           </tbody>
         </q-markup-table>
       </q-card-section>
     </q-card>
   </div>
-  <!-- <pre>
-        {{ form.renovacions }}
-      </pre
-  > -->
+  <!-- <pre>{{ form }}</pre> -->
 </template>
 
 <script setup>
@@ -103,41 +98,18 @@ import { useQuasar } from "quasar";
 import dayjs from 'dayjs';
 const $q = useQuasar();
 
-const tableRef = ref();
-const rows = ref([]);
-const filter = ref("");
 const loading = ref(false);
 const form = ref({});
 const daysRemaining = ref([]);
-const pagination = ref({
-  sortBy: "id",
-  descending: false,
-  page: 1,
-  rowsPerPage: 7,
-  rowsNumber: 10,
-});
 
-async function onRequest(props) {
-  const { page, rowsPerPage, sortBy, descending } = props.pagination;
-  const filter = props.filter;
-  loading.value = true;
-
-  const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
-  const order_by = descending ? "-" + sortBy : sortBy;
-  const { data, total = 0 } = await RenovacionService.getData({
-    params: { rowsPerPage: fetchCount, page, search: filter, order_by },
-  });
-  console.log(data);
-  rows.value.splice(0, rows.value.length, ...data);
-  !total
-    ? (pagination.value.rowsNumber = data.length)
-    : (pagination.value.rowsNumber = total);
-  pagination.value.page = page;
-  pagination.value.rowsPerPage = rowsPerPage;
-  pagination.value.sortBy = sortBy;
-  pagination.value.descending = descending;
-  loading.value = false;
-}
+const options = ref([
+{ label: 'A 1 DIA DE VENCER', value: 1 }, 
+{ label: 'A 2 DIAS DE VENCER', value: 2 },
+{ label: 'A 3 DIAS DE VENCER', value: 3 }, 
+{ label: 'A 4 DIAS DE VENCER', value: 4},
+{ label: 'A 5 DIAS DE VENCER', value: 5},
+{ label: 'A 6 DIAS DE VENCER', value: 6},
+])
 
 const rform = ref({
   fecha: "",
@@ -148,20 +120,44 @@ onMounted(() => {
 });
 
 async function onRequestc(params) {
-    try {
+   try {
     const row = await CartaService.getDatac(rform.value);
     form.value = row;
-    console.log(row);
-    
-    form.value.renovacions.forEach((a, index) => {
-      if (a.fecha_incial && a.fecha_vencimiento) {
-        const startDate = dayjs(a.fecha_incial);
-        const endDate = dayjs(a.fecha_vencimiento);
-        daysRemaining.value[index] = endDate.diff(startDate, 'day'); 
-      } else {
-        daysRemaining.value[index] = null; 
+
+    form.value.forEach(item => {
+      if (!item.renovacions) {
+        item.renovacions = [];
       }
     });
+
+    // Limpiamos daysRemaining ya que ahora no lo utilizaremos
+    daysRemaining.value = [];
+
+    form.value.forEach(item => {
+      item.renovacions.forEach(a => {
+        if (a.fecha_incial && a.fecha_vencimiento) {
+          const today = dayjs();
+          const endDate = dayjs(a.fecha_vencimiento);
+
+          // Calcular días restantes antes del vencimiento
+          a.daysRemaining = endDate.diff(today, 'day');
+
+          // Si ya pasó la fecha, calcular los días que han transcurrido desde el vencimiento
+          if (a.daysRemaining < 0) {
+            a.daysRemaining = null; // No mostrar días restantes si ya venció
+          }
+
+          // Calcular días desde que venció
+          a.daysPassedSinceExpiration = today.diff(endDate, 'day');
+        } else {
+          a.daysRemaining = null;
+          a.daysPassedSinceExpiration = null;
+        }
+
+      });
+    });
+
+    console.log("Datos procesados:", form.value);
   } catch (error) {
     console.error("Error al cargar datos:", error);
   }
