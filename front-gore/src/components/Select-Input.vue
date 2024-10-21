@@ -12,36 +12,15 @@
       :disable="loading"
       >
       <template v-slot:label> {{label}} <span v-if="requerido" class="text-red-7 text-weight-bold">(*)</span></template>
-      <template v-if="active_prepend" v-slot:prepend>
+      <template v-slot:prepend>
         <slot name="prepend"></slot>
       </template>
-      <template v-if="active_append" v-slot:append >
+      <template v-slot:append >
         <slot name="append"></slot>
       </template>
       <template v-if="active_before" v-slot:before >
         <slot name="before"></slot>
       </template>
-      <template v-if="active_error" v-slot:error >
-        <slot name="error"></slot>
-      </template>
-      <!-- <template v-slot:after >
-        <slot name="after"></slot>
-      </template>
-      <template v-slot:hint >
-        <slot name="hint"></slot>
-      </template> -->
-      <!-- <template v-slot:counter >
-        <slot name="counter"></slot>
-      </template>
-      <template v-slot:loading >
-        <slot name="loading"></slot>
-      </template>
-      <template v-slot:before-options >
-        <slot name="before-options"></slot>
-      </template>
-      <template v-slot:after-options >
-        <slot name="after-options"></slot>
-      </template> -->
       <template v-slot:no-option>
           <q-item>
               <q-item-section class="text-grey">
@@ -66,10 +45,7 @@ const props = defineProps({
 /********************************************** */
   GenerateList :{default:null},
   requerido:{default:false},
-  active_error:{default:false},
-  active_before:{default:false},
-  active_prepend:{default:false},
-  active_append:{default:false}, /* agregar activadores de slots** */
+  active_before:{default:false}, /* agregar activadores de slots** */
 });
 let stringOptions = null;
 const model = ref('');
@@ -112,13 +88,19 @@ watch(()=>props.modelValue,(newVal,oldVal)=>{
 const filterOptions = ref(stringOptions);
 function filter(val, update) {
   update(() => {
-    if (val === '') filterOptions.value = stringOptions;
-    else {
+    if (!stringOptions || stringOptions.length === 0) {
+      filterOptions.value = [];
+      return;
+    }
+    if (val === '') {
+      filterOptions.value = stringOptions;
+    } else {
       filterOptions.value = stringOptions.filter(v => {
-        if(typeof v === 'object'){
-          return v[op_label.value].toString().toLowerCase().includes(val.toLowerCase());
-        }else
-          return v.toString().toLowerCase().includes(val.toLowerCase())
+        if (typeof v === 'object') {
+          return v[op_label.value]?.toString().toLowerCase().includes(val.toLowerCase());
+        } else {
+          return v.toString().toLowerCase().includes(val.toLowerCase());
+        }
       });
     }
   });
@@ -135,10 +117,12 @@ async function ExtraerDatos(options){
     return options
   }
 }
-function CargarModel(_model){
-  if (_model && typeof stringOptions[0] === 'object' && typeof _model !== 'object')
+function CargarModel(_model) {
+  if (typeof _model !== 'object' && Array.isArray(stringOptions) && typeof stringOptions[0] === 'object') {
     model.value = stringOptions.find(v => v[op_value.value] === _model);
-  else
+  } else {
     model.value = _model;
+  }
 }
+
 </script>
